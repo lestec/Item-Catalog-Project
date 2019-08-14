@@ -173,8 +173,11 @@ def gdisconnect():
         del login_session['username']
         del login_session['email']
         del login_session['picture']
-        response = make_response(json.dumps('Successfully disconnected.'), 200)
-        response.headers['Content-Type'] = 'application/json'
+    #seeing if redirect works with google    
+        #response = make_response(json.dumps('Successfully disconnected.'), 200)
+        #response.headers['Content-Type'] = 'application/json'
+        response = redirect(url_for('showCatalog'))
+        #flash("You are now logged out.")
         return response
     else:
         response = make_response(json.dumps('Failed to revoke token for given user.', 400))
