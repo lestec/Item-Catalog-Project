@@ -1,0 +1,18 @@
+<html>
+  <body>
+<div class="container">
+<div class="list-title bold">
+  			<h1>Local Children's Events Page</h1>
+  		</div>
+      <div>
+       {% for i in category %}
+
+<a href = "{{url_for('itemsMenu', category_id = i.id)}}"> <p>{{i.name}}</p></a>   
+
+
+{% endfor %}
+
+      </div>
+  </div>
+</body>
+</html>
