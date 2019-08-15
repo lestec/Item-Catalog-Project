@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, jsonify, url_for, f
 # adding asc for names below
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Category, Item 
+from database_setup import Base, Category, Item, User 
 # New imports for oauth
 from flask import session as login_session
 import random, string
@@ -119,14 +119,14 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
     #need to add in after add user login 
-     # ADD PROVIDER TO LOGIN SESSION
-    #login_session['provider'] = 'google'
+     #ADD PROVIDER TO LOGIN SESSION
+    login_session['provider'] = 'google'
     
      # see if user exists, if it doesn't make a new one
-    #user_id = getUserID(data["email"])
-    #if not user_id:
-    #    user_id = createUser(login_session)
-    #login_session['user_id'] = user_id
+    user_id = getUserID(data["email"])
+    if not user_id:
+        user_id = createUser(login_session)
+    login_session['user_id'] = user_id
 
     output = ''
     output += '<h1>Welcome, '
@@ -141,7 +141,29 @@ def gconnect():
 
 
 # User Helper Functions
+#takes login_session as input and creates new user in DB
+def createUser(login_session):
+    newUser = User(name=login_session['username'], email=login_session[
+                   'email'], picture=login_session['picture'])
+    session.add(newUser)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.id
 
+#if a user ID is passed into this method it returns user object associated
+#with this ID #
+def getUserInfo(user_id):
+    user = session.query(User).filter_by(id=user_id).one()
+    return user
+
+#Will take an email address and return an ID # if that email address 
+#belongs to a user in our DB, if not returns none
+def getUserID(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
 
 # NOT SURE but think need disconnect for email user too!
 
@@ -190,6 +212,14 @@ def gdisconnect():
 @app.route('/catalog/')
 def showCatalog():
     category = session.query(Category).order_by(asc(Category.name)).all()
+#going to differentiate whether a user is loggin in or not logged in 
+#since the only option on this pg is to create a new rest     
+    #if 'username' not in login_session:
+    #    return render_template('publicCatalog.html', category=category)
+    #else:
+    #    return render_template('catalog.html', category=category)
+
+    
     return render_template('catalog.html', category=category)
     #return "this page will show all my venues
 
@@ -200,8 +230,10 @@ def showCatalog():
 # wking: http://localhost:5000/catalog/new/
 @app.route('/catalog/new/', methods=['GET', 'POST'])
 def newCategory():
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
-        newCategory = Categories(name=request.form['name'])
+        newCategory = Categories(name=request.form['name'], user_id=login_session['user_id'])
         session.add(newCategory)
         flash('New Category %s Succesfully Created' % newCategory.name)
         session.commit()
