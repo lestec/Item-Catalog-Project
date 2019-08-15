@@ -141,7 +141,7 @@ def gconnect():
 
 
 # User Helper Functions
-# add code here createUser(login_session), getUserInfo(user_id), getUserID(email)
+
 
 # NOT SURE but think need disconnect for email user too!
 
@@ -196,6 +196,20 @@ def showCatalog():
 
 #if the user click on one category, show the items for the picked category
 #on the main pg. return 2 diff html templates based on user status
+# create a new category venue
+# wking: http://localhost:5000/catalog/new/
+@app.route('/catalog/new/', methods=['GET', 'POST'])
+def newCategory():
+    if request.method == 'POST':
+        newCategory = Categories(name=request.form['name'])
+        session.add(newCategory)
+        flash('New Category %s Succesfully Created' % newCategory.name)
+        session.commit()
+        return redirect(url_for('showCatalog'))
+    else:   
+            return render_template('newCategory.html')
+    #return "this pg is for making new category"
+
 
 @app.route('/catalog/<int:category_id>/')
 @app.route('/catalog/<int:category_id>/items/')
