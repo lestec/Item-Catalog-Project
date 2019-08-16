@@ -202,6 +202,7 @@ def gdisconnect():
         #flash("You are now logged out.")
         return response
     else:
+    	# If the given token was invalid
         response = make_response(json.dumps('Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
@@ -251,6 +252,17 @@ def itemsMenu(category_id):
     items = session.query(Item).filter_by(category_id=category_id).all()
     return render_template('itemsCatalog.html', category=category, items=items)
     
+
+# Disconnect from the login session
+@app.route('/disconnect')
+def disconnect():
+    if 'username' in login_session:
+        gdisconnect()
+        flash("You have successfully been logged out.")
+        return redirect(url_for('showCatalog'))
+    else:
+        flash("You were not logged in")
+        return redirect(url_for('showCatalog'))
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
