@@ -202,21 +202,44 @@ def gdisconnect():
         #flash("You are now logged out.")
         return response
     else:
-    	# If the given token was invalid
+        # If the given token was invalid
         response = make_response(json.dumps('Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
+
+# JSON APIs to view Restaurant Information
+@app.route('/catalog/<int:category_id>/items/JSON')
+def catalogMenuJSON(category_id):
+    category = session.query(Category).filter_by(id=category_id).one()
+    items = session.query(Item).filter_by(
+        category_id=category_id).all()
+    return jsonify(Items=[i.serialize for i in items])
+
+
+@app.route('/catalog/<int:category_id>/items/<int:item_id>/JSON')
+def itemMenuJSON(category_id, item_id):
+    itemsMenu = session.query(Item).filter_by(id=item_id).one()
+    return jsonify(itemsMenu=itemsMenu.serialize)
+
+
+@app.route('/catalog/JSON')
+def categoryJSON():
+    category = session.query(Category).all()
+    return jsonify(category=[c.serialize for c in category])
 
 
 # Show all catalog venues
 @app.route('/')
 @app.route('/catalog/')
 def showCatalog():
-    category = session.query(Category).order_by(asc(Category.name)).all()
+#recent error 8/16 gonna try without .all   
+    #category = session.query(Category).order_by(asc(Category.name)).all()
+    category = session.query(Category).order_by(asc(Category.name))
+
 #going to differentiate whether a user is loggin in or not logged in 
 #since the only option on this pg is to create a new rest     
     #if 'username' not in login_session:
-    #    return render_template('publicCatalog.html', category=category)
+     #   return render_template('publicCatalog.html', category=category)
     #else:
     #    return render_template('catalog.html', category=category)
 
@@ -234,24 +257,131 @@ def newCategory():
     if 'username' not in login_session:
         return redirect('/login')
     if request.method == 'POST':
-        newCategory = Categories(name=request.form['name'], user_id=login_session['user_id'])
+        newCategory = Category(name=request.form['name'], user_id=login_session['user_id'])
         session.add(newCategory)
-        flash('New Category %s Succesfully Created' % newCategory.name)
+    #gettin an error on flash - invalid syntax so # out to move on 
+    #flash('New Category %s Succesfully Created' % newCategory.name)
         session.commit()
         return redirect(url_for('showCatalog'))
     else:   
             return render_template('newCategory.html')
     #return "this pg is for making new category"
 
+#edit a catalog venue
+#wking: http://localhost:5000/catalog/1/edit
+@app.route('/catalog/<int:category_id>/edit/', methods=['GET', 'POST'])
+def editCategory(category_id):
+    editedCatalog = session.query(Category).filter_by(id=category_id).one()
+    if 'username' not in login_session:
+        return redirect('/login')
+    if editedCatalog.user_id != login_session['user_id']:
+        return "<script>function myFunction() {alert('You are not authorized to edit this venue. Please create your own in order to edit.');}</script><body onload='myFunction()'>"
+    if request.method == 'POST':
+        if request.form['name']:
+            editedCatalog.name = request.form['name']
+            #getting error below
+            #flash('Catalog Venue Succesfully Edited %s' editedCatalog.name)
+            return redirect(url_for('showCatalog'))
+    else:       
+        return render_template('editCategory.html', category=editedCatalog)
+    #return "pg to edit venue"
 
+# Delete a catalog venue
+#http://localhost:5000/catalog/1/delete/
+@app.route('/catalog/<int:category_id>/delete/', methods=['GET', 'POST'])
+def deleteCategory(category_id):
+    categoryToDelete = session.query(Category).filter_by(id=category_id).one()
+    if 'username' not in login_session:
+        return redirect('/login')
+    if categoryToDelete.user_id != login_session['user_id']:
+        return "<script>function myFunction() {alert('You are not authorized to delete this venue. Please create your own in order to delete.');}</script><body onload='myFunction()'>"
+    if request.method == 'POST':
+        session.delete(categoryToDelete)
+        flash('%s Succesfully Deleted' % categoryToDelete.name)
+        session.commit()
+        return redirect(url_for('showCatalog', category_id=category_id))
+    else:
+        return render_template('deleteCategory.html', category=categoryToDelete)
+    #return 'this pg will be for deleting categories %s' % categories_id 
+
+#Show venue events menu
 @app.route('/catalog/<int:category_id>/')
 @app.route('/catalog/<int:category_id>/items/')
 def itemsMenu(category_id):
     #categories = session.query(Category).all()
     category = session.query(Category).filter_by(id=category_id).one()
+    #creator = getUserInfo(category.user_id)
     items = session.query(Item).filter_by(category_id=category_id).all()
+
     return render_template('itemsCatalog.html', category=category, items=items)
+
+#create a new venue's menu item
+#http://localhost:5000/catalog/2/items/new/
+@app.route('/catalog/<int:category_id>/items/new/', methods=['GET', 'POST'])
+def newCategoryItem(category_id):
+    if 'username' not in login_session:
+        return redirect('/login')
+    category = session.query(Category).filter_by(id=category_id).one()
+    if login_session['user_id'] != category.user_id:
+        return "<script>function myFunction() {alert('You are not authorized to add menu items to this. Please create your own in order to add items.');}</script><body onload='myFunction()'>"
+    if request.method == 'POST':
+     newItem = Item(name = request.form['name'], description = request.form['description'],
+                        category_id = category_id, user_id=category.user_id)
+     session.add(newItem)
+     session.commit()
+     flash('New Menu %s Item Successfully Created' % (newItem.name))
+     return redirect(url_for('itemsMenu', category_id = category_id))
+    else:
+      return render_template('newCategoryItem.html', category_id = category_id)
+    #return render_template('newCategoryItem.html', category_id=category_id)
+    #return 'updated new venues menu item' 
+
+# Edit menu item
+# to check: http://localhost:5000/catalog/1/items/2/edit/
+@app.route('/catalog/<int:category_id>/items/<int:item_id>/edit/', methods=['GET', 'POST'])
+def editCategoryItem(category_id, item_id):
+    if 'username' not in login_session:
+        return redirect('/login')
+    editedItem = session.query(Item).filter_by(id=item_id).one()
+    category = session.query(Category).filter_by(id=category_id).one()
+    if login_session['user_id'] != category.user_id:
+        return "<script>function myFunction() {alert('You are not authorized to edit menu items to this. Please create in order to edit items.');}</script><body onload='myFunction()'>"
+    if request.method == 'POST':
+        if request.form['name']:
+            editedItem.name = request.form['name']
+        if request.form['description']:
+            editedItem.description = request.form['description']
+        session.add(editedItem)
+        session.commit()
+        flash("Menu Item has been edited")      
     
+        return redirect(url_for('itemsMenu', category_id=category_id))
+    else:
+        return render_template('editCategoryItem.html', category_id=category_id, 
+        item_id=item_id, item=editedItem )
+    #return "page to edit a menu item. task 2 complete!"
+
+
+#task 3: Delete venue menu item
+#http://localhost:5000/catalog/1/menu/2/delete/
+@app.route('/catalog/<int:category_id>/items/<int:item_id>/delete/', methods=['GET', 'POST'])
+def deleteCategoryItem(category_id, item_id):
+    if 'username' not in login_session:
+        return redirect('/login')
+    category = session.query(Category).filter_by(id=category_id).one()    
+    itemToDelete = session.query(Item).filter_by(id=item_id).one()
+    if login_session['user_id'] != category.user_id:
+        return "<script>function myFunction() {alert('You are not authorized to delete menu items to this. Please create your own in order to delete items.');}</script><body onload='myFunction()'>"
+    if request.method == 'POST':
+        session.delete(itemToDelete)
+        session.commit()
+        flash('Menu Item Successfully Deleted')
+        return redirect(url_for('itemsMenu', category_id=category_id))
+    else:
+        return render_template('deleteCategoryItem.html', item=itemToDelete)
+    #return render_template('deleteCategoryItem.html', item=itemToDelete)
+    #return "page to delete a menu item. Task 3 complete %s" %item_id
+
 
 # Disconnect from the login session
 @app.route('/disconnect')

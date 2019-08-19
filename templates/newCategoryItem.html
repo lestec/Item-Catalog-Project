@@ -1,0 +1,24 @@
+<html>
+
+
+<body>
+{% include "header.html" %}
+  
+<h1>New Menu Item</h1>
+<div class="pane">
+<form action="#" method = 'post'>
+
+<p>Name:</p>
+  <input type='text' size='30' name='name'>
+<p>Description:</p>
+  <input type ='text' size='30' name='description'>
+</br>
+
+<input type='submit' value='Create'>
+<button><a href = '{{url_for('showCatalog')}}'> Cancel </a></button>
+
+</form>
+</div>
+</body>
+
+</html>
