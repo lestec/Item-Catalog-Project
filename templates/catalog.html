@@ -1,9 +1,11 @@
 {% include "header.html" %}
+{% include "flash.html" %}
 <html>
   <body>
 
 <div class="container">
-<div class="list-title bold">
+	<div class="box">
+<div class="list-title">
   			<h1>Local Children's Events Page</h1>
   			<a href="{{url_for('newCategory')}}" > <h3> Create a New Event </h3> </a>
 
@@ -17,6 +19,8 @@
 {% endfor %}
 
       </div>
+      <!--adding div from box here-->
+  </div>
   </div>
 </body>
 </html>
