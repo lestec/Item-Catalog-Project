@@ -1,0 +1,45 @@
+
+body {
+  text-align: center;
+}
+
+.container {
+  border: 2px solid red;
+}
+
+.box {
+  border: 2px solid blue;
+  padding: 40px;
+  margin: 60px;
+}
+
+.nav {
+  padding: 10px;
+  margin: 0px;
+  list-style: none;
+  /*dont forget to take out border*/
+  border: 1px solid silver;
+  -ms-box-orient: horizontal;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: flex;
+  justify-content: space-around;
+
+}
+
+.nowrap  { 
+  -webkit-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+}  
+
+.home {
+  padding: 0;
+}
+
+.login {
+  justify-content: flex-end;
+  padding-left: 20px;
+}
