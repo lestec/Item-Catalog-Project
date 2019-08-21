@@ -233,17 +233,15 @@ def categoryJSON():
 @app.route('/catalog/')
 def showCatalog():
 #recent error 8/16 gonna try without .all   
-    #category = session.query(Category).order_by(asc(Category.name)).all()
     category = session.query(Category).order_by(asc(Category.name))
-
+    #category = session.query(Category).order_by(asc(Category.name)).all()
+    #category = session.query(Category).order_by(asc(Category.name))
 #going to differentiate whether a user is loggin in or not logged in 
 #since the only option on this pg is to create a new rest     
     #if 'username' not in login_session:
      #   return render_template('publicCatalog.html', category=category)
     #else:
     #    return render_template('catalog.html', category=category)
-
-    
     return render_template('catalog.html', category=category)
     #return "this page will show all my venues
 
@@ -275,13 +273,16 @@ def editCategory(category_id):
     if 'username' not in login_session:
         return redirect('/login')
     if editedCatalog.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized to edit this venue. Please create your own in order to edit.');}</script><body onload='myFunction()'>"
+        #return "<script>function myFunction() {alert('You are not authorized to edit this venue. Please create your own in order to edit.');}</script><body onload='myFunction()'>"
+        flash ("You are not authorized to edit this category.")
+        return redirect(url_for('showCatalog'))
     if request.method == 'POST':
         if request.form['name']:
             editedCatalog.name = request.form['name']
             #getting error below
             #flash('Catalog Venue Succesfully Edited %s' editedCatalog.name)
-            return redirect(url_for('showCatalog'))
+            flash('Catalog Venue Succesfully Edited')
+        return redirect(url_for('showCatalog'))
     else:       
         return render_template('editCategory.html', category=editedCatalog)
     #return "pg to edit venue"
@@ -294,7 +295,10 @@ def deleteCategory(category_id):
     if 'username' not in login_session:
         return redirect('/login')
     if categoryToDelete.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized to delete this venue. Please create your own in order to delete.');}</script><body onload='myFunction()'>"
+        #return "<script>function myFunction() {alert('You are not authorized to delete this venue. Please create your own in order to delete.');}</script><body onload='myFunction()'>"
+    #trying to message to flash and pg redirect
+        flash ("You are not authorized to delete this Category")
+        return redirect(url_for('showCatalog'))
     if request.method == 'POST':
         session.delete(categoryToDelete)
         flash('%s Succesfully Deleted' % categoryToDelete.name)
@@ -323,7 +327,10 @@ def newCategoryItem(category_id):
         return redirect('/login')
     category = session.query(Category).filter_by(id=category_id).one()
     if login_session['user_id'] != category.user_id:
-        return "<script>function myFunction() {alert('You are not authorized to add menu items to this. Please create your own in order to add items.');}</script><body onload='myFunction()'>"
+        #return "<script>function myFunction() {alert('You are not authorized to add menu items to this. Please create your own in order to add items.');}</script><body onload='myFunction()'>"
+      #trying to message to flash and pg redirect
+        flash ("You are not authorized to create a new Category Item")
+        return redirect(url_for('showCatalog'))
     if request.method == 'POST':
      newItem = Item(name = request.form['name'], description = request.form['description'],
                         category_id = category_id, user_id=category.user_id)
@@ -345,7 +352,9 @@ def editCategoryItem(category_id, item_id):
     editedItem = session.query(Item).filter_by(id=item_id).one()
     category = session.query(Category).filter_by(id=category_id).one()
     if login_session['user_id'] != category.user_id:
-        return "<script>function myFunction() {alert('You are not authorized to edit menu items to this. Please create in order to edit items.');}</script><body onload='myFunction()'>"
+        #return "<script>function myFunction() {alert('You are not authorized to edit menu items to this. Please create in order to edit items.');}</script><body onload='myFunction()'>"
+        flash ("You are not authorized to edit this Category Item")
+        return redirect(url_for('showCatalog'))
     if request.method == 'POST':
         if request.form['name']:
             editedItem.name = request.form['name']
@@ -371,7 +380,9 @@ def deleteCategoryItem(category_id, item_id):
     category = session.query(Category).filter_by(id=category_id).one()    
     itemToDelete = session.query(Item).filter_by(id=item_id).one()
     if login_session['user_id'] != category.user_id:
-        return "<script>function myFunction() {alert('You are not authorized to delete menu items to this. Please create your own in order to delete items.');}</script><body onload='myFunction()'>"
+        #return "<script>function myFunction() {alert('You are not authorized to delete menu items to this. Please create your own in order to delete items.');}</script><body onload='myFunction()'>"
+        flash ("You are not authorized to delete this Category Item")
+        return redirect(url_for('showCatalog', category_id=category_id))
     if request.method == 'POST':
         session.delete(itemToDelete)
         session.commit()
