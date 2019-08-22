@@ -1,7 +1,7 @@
 <html>
     <body>
-    	{% include "header.html" %}
-    	<div>
+    {% include "header.html" %}
+    <div class="itemspg">
     	<h1>{{ category.name }}</h1>
         {% if items !=[] %}
 <a href = '{{url_for('newCategoryItem', category_id = category.id)}}'>Create New Item</a>
