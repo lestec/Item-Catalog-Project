@@ -1,14 +1,42 @@
 
 body {
   text-align: center;
+  /*
+  border: 3px solid black;*/
+  width: 600px;
+  /*trying to get to center*/
+  position:relative;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .container {
-  border: 2px solid red;
+  border: 1px solid silver;
+  /*
+  background-image:url(https://cdn.pixabay.com/photo/2016/06/18/11/15/clouds-1464836_960_720.jpg); 
+  
+  background-image: url(https://images.pexels.com/photos/531767/pexels-photo-531767.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500);
+  
+  background-image: url(http://www.1mtb.com/wp-content/uploads/2014/03/top-10-best-free-online-cloud-storage-services.jpg);
+  
+  background-image: url(https://cdn0.tnwcdn.com/wp-content/blogs.dir/1/files/2013/06/137173427.jpg);
+  
+  */
+  background-image: url(https://i.ytimg.com/vi/NkcVQ-FLI_E/maxresdefault.jpg);
+  background-size: cover;
+  background-position: center;
+  /*
+  -webkit-box-shadow: 6px 3px 5px 0px rgba(0,0,0,0.69);
+  -moz-box-shadow: 6px 3px 5px 0px rgba(0,0,0,0.69);
+  box-shadow: 6px 3px 5px 0px rgba(0,0,0,0.69);
+*/
+-webkit-box-shadow: 7px 4px 20px 0px rgba(0,0,0,0.75);
+-moz-box-shadow: 7px 4px 20px 0px rgba(0,0,0,0.75);
+box-shadow: 7px 4px 20px 0px rgba(0,0,0,0.75);
 }
 
 .box {
-  border: 2px solid blue;
+  /*border: 2px solid blue;*/
   padding: 40px;
   margin: 60px;
 }
@@ -27,6 +55,7 @@ body {
   display: -webkit-flex;
   display: flex;
   justify-content: space-around;
+  background-color: #000080;
 
 }
 
@@ -42,4 +71,24 @@ body {
 .login {
   justify-content: flex-end;
   padding-left: 20px;
+}
+
+/*=======================Media Queries========================*/
+@media screen and (max-width: 599px) {
+body{	
+	width: 100%;
+    }
+}	
+
+
+@media screen and (max-width: 400px) {
+
+body {
+	width: 100%;
+}
+.nav {
+  display: flex;
+  flex-direction: column;
+  } 
+
 }
