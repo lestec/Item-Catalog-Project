@@ -10,7 +10,7 @@ body {
   margin-right: auto;
 }
 
-.container {
+.container, .itemspg {
   border: 1px solid silver;
   /*
   background-image:url(https://cdn.pixabay.com/photo/2016/06/18/11/15/clouds-1464836_960_720.jpg); 
@@ -75,6 +75,7 @@ box-shadow: 7px 4px 20px 0px rgba(0,0,0,0.75);
 
 /*=======================Media Queries========================*/
 @media screen and (max-width: 599px) {
+
 body{	
 	width: 100%;
     }
@@ -86,6 +87,7 @@ body{
 body {
 	width: 100%;
 }
+
 .nav {
   display: flex;
   flex-direction: column;
