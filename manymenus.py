@@ -19,12 +19,6 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
-# Create dummy user
-#user1 = User(name="test dummy",email='tdummy@gmail.com')
-#session.add(user1)
-#session.commit()
-
-
 # Create Location of Events #not sure if ADD user_id=1 ????
 category1 = Category(name="Library")
 session.add(category1)
@@ -35,7 +29,7 @@ item1 = Item(
     name="Storytime",
     description='Storytimes for varies ages.',
     category=category1
-    #user = user_id=1
+    # user = user_id=1
     )
 session.add(item1)
 session.commit()
@@ -44,8 +38,8 @@ item2 = Item(
     name="Playtime",
     description='An hour playtime for ages 3-6.',
     category=category1
-    #user = user_id=1
-	)
+    # user = user_id=1
+    )
 session.add(item2)
 session.commit()
 
@@ -53,7 +47,7 @@ item3 = Item(
     name="STEM Programs",
     description='Programs focused on Math, Science, Engineering, and Math',
     category=category1
-    #user = user_id=1    
+    # user = user_id=1
     )
 session.add(item3)
 session.commit()
@@ -66,8 +60,8 @@ item1 = Item(
     name="Events",
     description='Events for kids.',
     category=category2
-    #user user_id=1
-	)
+    # user user_id=1
+    )
 session.add(item1)
 session.commit()
 
@@ -75,8 +69,8 @@ item2 = Item(
     name="Classes",
     description='Classes for kids',
     category=category2
-    #user user_id=1
-	)
+    # user user_id=1
+    )
 session.add(item2)
 session.commit()
 
@@ -84,8 +78,8 @@ item3 = Item(
     name="Camps",
     description='Day camps for school breaks',
     category=category2
-    #user user_id=1
-	)
+    # user user_id=1
+    )
 session.add(item3)
 session.commit()
 
@@ -98,8 +92,8 @@ item1 = Item(
     name="Kangamoo",
     description='Indoor playland and events.',
     category=category3
-    #user user_id=1
-	)
+    # user user_id=1
+    )
 session.add(item1)
 session.commit()
 
@@ -107,8 +101,8 @@ item2 = Item(
     name="Lost World Myth and Magic",
     description='Indoor playland and arcade.',
     category=category3
-    #user user_id=1
-	)
+    # user user_id=1
+    )
 session.add(item2)
 session.commit()
 
@@ -116,8 +110,8 @@ item3 = Item(
     name="Bouncy World Indoor Bounce Playland",
     description='Indoor bouncy playland',
     category=category3
-    #user user_id=1
-	)
+    # user user_id=1
+    )
 session.add(item3)
 session.commit()
 

@@ -1,0 +1,37 @@
+{% block content %}
+{% include "header.html" %}
+
+<h1>{{ restaurant.name }}
+            <figure class="creator">
+                <img src="{{ creator.picture}}">
+                <figcaption>{{ creator.name }}</figcaption>
+            </figure>
+            </h1>
+
+        </div>
+    </div>
+    <div class="row padding-top padding-bottom">
+        <div class="col-md-1"></div>
+        <div class="col-md-11 padding-none">
+            
+        </div>
+        <div class="col-md-7"></div>
+    </div>
+    
+    {% if items !=[] %} 
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-3">
+                <h2>Kids Events</h2>
+                    {% for i in items %}
+                            <div class="menu-item">
+                                <h3>{{i.name}}</h3>
+                                <p>{{i.description}}</p>                                
+                            </div>
+                    {% endfor %}
+            </div>
+            
+            <div class="col-md-1"></div>
+        </div>
+    {% endif %}
+{% endblock %}
