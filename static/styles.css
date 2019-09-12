@@ -12,16 +12,6 @@ body {
 
 .container, .itemspg {
   border: 1px solid silver;
-  /*
-  background-image:url(https://cdn.pixabay.com/photo/2016/06/18/11/15/clouds-1464836_960_720.jpg); 
-  
-  background-image: url(https://images.pexels.com/photos/531767/pexels-photo-531767.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500);
-  
-  background-image: url(http://www.1mtb.com/wp-content/uploads/2014/03/top-10-best-free-online-cloud-storage-services.jpg);
-  
-  background-image: url(https://cdn0.tnwcdn.com/wp-content/blogs.dir/1/files/2013/06/137173427.jpg);
-  
-  */
   background-image: url(https://i.ytimg.com/vi/NkcVQ-FLI_E/maxresdefault.jpg);
   background-size: cover;
   background-position: center;
@@ -71,6 +61,15 @@ box-shadow: 7px 4px 20px 0px rgba(0,0,0,0.75);
 .login {
   justify-content: flex-end;
   padding-left: 20px;
+}
+
+/*add for form submit */
+input:invalid {
+  border: 2px dashed red;
+}
+
+input:valid {
+  border: 2px solid black;
 }
 
 /*=======================Media Queries========================*/
